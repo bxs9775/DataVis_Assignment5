@@ -108,7 +108,18 @@ function initGraph() {
       .attr('height', (d) => h - 20 - yScale(d.sleep))
       .attr('width', barlen )
       .attr('y', (d) => yScale(d.sleep))
-      .style('fill', (d) => cScale(d.sleep));
+      .style('fill', (d) => cScale(d.sleep))
+      //Adding interactivity.
+      .on('mouseover',function(d){
+        d3.select(this)
+          .style('fill','green');
+        //console.dir(`Mouseover - day = ${d.date}`);
+      })
+      .on('mouseout',function(d){
+        d3.select(this)
+          .style('fill',cScale(d.sleep));
+        //console.dir(`Mouseout - day = ${d.date}`);
+      });
 
     // create our x-axis and customize look with .ticks() and
     // .tickFormat()
