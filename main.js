@@ -212,6 +212,10 @@ function updateGraph() {
     .transition()
     .duration(1000)
     .attr('x', -barlen)
+    // Transition added for removal to give the program time to process the mouseout event on a bar before it is removed.
+    // This prevents a bug where the tooltip remains visible if a bar is removed when the mouse is on it and none of the other bars trigger a mouseover event.
+    .transition()
+    .duration(50)
     .remove();
 
   xAxis.ticks(data.length + 1)
