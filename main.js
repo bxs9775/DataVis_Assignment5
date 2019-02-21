@@ -19,7 +19,7 @@ let xScale, yScale, cScale;
 let xAxis, yAxis;
 let xAxisGroup, yAxisGroup;
 
-let toolOffX = -15;
+let toolOffX = 10;
 let toolOffY = 50;
 
 let numDaysSlider = document.querySelector("#numDaysSlider");
@@ -52,7 +52,7 @@ function barOver(d){
   
   console.dir(bar.attr('x'));
   console.dir(bar.attr('y'));
-  var tooltipX = 1*bar.attr('x') + 1*bar.attr('width') + toolOffX;
+  var tooltipX = 1*bar.attr('x') + bar.attr('width')/2 + toolOffX;
   var tooltipY = 1*bar.attr('y') + toolOffY;
   console.log(`(${tooltipX},${tooltipY})`);
   bar.style('fill','green');
@@ -193,6 +193,8 @@ function updateGraph() {
       .attr('width', barlen )
       .attr('y', (d) => yScale(d.sleep))
       .style('fill', (d) => cScale(d.sleep))
+      .on('mouseover',barOver)
+      .on('mouseout',barOut)
     .merge(bars)
       .transition()
       .duration(1000)
