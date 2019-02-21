@@ -1,4 +1,4 @@
-/* Assignment 4  
+/* Assignment 5 
  *
  * Use this template to add interactivity:
  *
@@ -19,12 +19,17 @@ let xScale, yScale, cScale;
 let xAxis, yAxis;
 let xAxisGroup, yAxisGroup;
 
+let toolOffX = -15;
+let toolOffY = 50;
+
 let numDaysSlider = document.querySelector("#numDaysSlider");
 
 let dataURL = "data.csv";
 
 // D3 time parsing function for the date format of our data
 let parseDate = d3.timeParse("%Y-%m-%d");
+//Tooltip date formatter
+let ttDateFormat = d3.timeFormat("%Y-%m-%d");
 
 // some values for the good sleep line
 let goodSleep = 7.5;
@@ -40,6 +45,35 @@ function rowConverter(d) {
   }
 }
 
+//event functions
+// Mouseover event function for the svg rect elements (bars)
+function barOver(d){
+  var bar = d3.select(this);
+  
+  console.dir(bar.attr('x'));
+  console.dir(bar.attr('y'));
+  var tooltipX = 1*bar.attr('x') + 1*bar.attr('width') + toolOffX;
+  var tooltipY = 1*bar.attr('y') + toolOffY;
+  console.log(`(${tooltipX},${tooltipY})`);
+  bar.style('fill','green');
+  //console.dir(`Mouseover - day = ${d.date}`);
+  var tooltip = d3.select('#barInfo')
+  .style('left',`${tooltipX}px`)
+  .style('top',`${tooltipY}px`);
+  tooltip.select('#barDate').text(ttDateFormat(d.date));
+  tooltip.select('#barHours').text(d.sleep);
+  tooltip.classed('hidden',false);
+}
+
+// Mouseout event function for the svg rect elements (bars)
+function barOut(d){
+  d3.select(this)
+    .style('fill',cScale(d.sleep));
+  //console.dir(`Mouseout - day = ${d.date}`);
+  d3.select('#barInfo').attr('class','hidden');
+}
+
+// Creates the graph
 function initGraph() {
   d3.csv(dataURL, rowConverter).then((data) => {
     // sort by date ascending
@@ -110,16 +144,8 @@ function initGraph() {
       .attr('y', (d) => yScale(d.sleep))
       .style('fill', (d) => cScale(d.sleep))
       //Adding interactivity.
-      .on('mouseover',function(d){
-        d3.select(this)
-          .style('fill','green');
-        //console.dir(`Mouseover - day = ${d.date}`);
-      })
-      .on('mouseout',function(d){
-        d3.select(this)
-          .style('fill',cScale(d.sleep));
-        //console.dir(`Mouseout - day = ${d.date}`);
-      });
+      .on('mouseover',barOver)
+      .on('mouseout',barOut);
 
     // create our x-axis and customize look with .ticks() and
     // .tickFormat()
@@ -137,6 +163,7 @@ function initGraph() {
   })
 }
 
+// Updates the graph
 function updateGraph() {
   let numDays = numDaysSlider.value;
 
