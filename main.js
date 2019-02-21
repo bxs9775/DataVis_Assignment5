@@ -73,6 +73,12 @@ function barOut(d){
   d3.select('#barInfo').attr('class','hidden');
 }
 
+// Mouseclick event function for the svg rect elements (bars)
+function barClick(d){
+  let bar = d3.select(this);
+  bar.classed('selected',!bar.classed('selected'));
+}
+
 // Creates the graph
 function initGraph() {
   d3.csv(dataURL, rowConverter).then((data) => {
@@ -145,7 +151,8 @@ function initGraph() {
       .style('fill', (d) => cScale(d.sleep))
       //Adding interactivity.
       .on('mouseover',barOver)
-      .on('mouseout',barOut);
+      .on('mouseout',barOut)
+      .on('click',barClick);
 
     // create our x-axis and customize look with .ticks() and
     // .tickFormat()
@@ -195,6 +202,7 @@ function updateGraph() {
       .style('fill', (d) => cScale(d.sleep))
       .on('mouseover',barOver)
       .on('mouseout',barOut)
+      .on('click',barClick)
     .merge(bars)
       .transition()
       .duration(1000)
