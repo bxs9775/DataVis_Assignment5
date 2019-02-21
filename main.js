@@ -19,7 +19,7 @@ let xScale, yScale, cScale;
 let xAxis, yAxis;
 let xAxisGroup, yAxisGroup;
 
-let toolOffX = 10;
+let toolOffX = 0;
 let toolOffY = 50;
 
 let numDaysSlider = document.querySelector("#numDaysSlider");
@@ -50,13 +50,11 @@ function rowConverter(d) {
 function barOver(d){
   var bar = d3.select(this);
   
-  console.dir(bar.attr('x'));
-  console.dir(bar.attr('y'));
+  bar.style('fill','green');
+  
   var tooltipX = 1*bar.attr('x') + bar.attr('width')/2 + toolOffX;
   var tooltipY = 1*bar.attr('y') + toolOffY;
-  console.log(`(${tooltipX},${tooltipY})`);
-  bar.style('fill','green');
-  //console.dir(`Mouseover - day = ${d.date}`);
+  
   var tooltip = d3.select('#barInfo')
   .style('left',`${tooltipX}px`)
   .style('top',`${tooltipY}px`);
@@ -69,7 +67,7 @@ function barOver(d){
 function barOut(d){
   d3.select(this)
     .style('fill',cScale(d.sleep));
-  //console.dir(`Mouseout - day = ${d.date}`);
+  
   d3.select('#barInfo').attr('class','hidden');
 }
 
